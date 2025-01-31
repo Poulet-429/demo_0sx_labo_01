@@ -1,21 +1,47 @@
+//MON DA: 2370489
+
 int led = 13;
-int brightness = 0; // Valeur de luminosité
-int fadeAmount = 5; // Valeur de variation de luminosité
+
+const int delayQuarterSec = 250;
+const int delayTwoSec = 2000;
 
 void delAllume() {
-  digitalWrite(led, HIGH);
   Serial.println("Allume - 2370489");
-  delay(2000);
+  digitalWrite(led, HIGH);
+  delay(delayTwoSec);
 }
 
-void delBlink() {
+void delBlink(int blinkTime) {
   Serial.println("Clignotement - 2370489");
-  for (int i = 0; i < 5; i++) { // 8/2+1 = 5
+  digitalWrite(led, LOW);
+  delay(delayQuarterSec);
+  for (int i = 0; i < blinkTime; i++) { 
     digitalWrite(led, HIGH);
-    delay(250);
+    delay(delayQuarterSec);
     digitalWrite(led, LOW);
-    delay(250);
+    delay(delayQuarterSec);
   } 
+}
+
+void delFade() {
+  static int brightness = 255; // Valeur de luminosité
+  static int delayFade = 30;
+  brightness = 255;
+  Serial.println("Variation - 2370489");
+  while (brightness > 0) {
+      analogWrite(led, brightness); // Change la luminosité de la LED
+      brightness = brightness - fadeAmount; // Change la valeur de luminosité
+
+  // Inverse la variation de luminosité quand la valeur de luminosité atteint 0 ou 255
+  // Attend 30 millisecondes avant de recommencer
+  delay(delayFade);
+  }
+}
+
+void delOff() {
+    Serial.println("Off - 2370489");
+  digitalWrite(led, LOW);
+  delay(delayTwoSec);
 }
 
 void setup() {
@@ -27,9 +53,8 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   delAllume();
-  delBlink();
-  analogWrite(13, 63);
-  delay(1000);
-  digitalWrite(led, LOW);
-  delay(1000);
+  delBlink(5); // 8/2+1 = 5
+  delFade();
+  delOff();
+
 }
